@@ -1,0 +1,172 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here are the latest global tech articles. Please analyze the data and extract the top 10 viral tech news items. \n\nCRITICAL RULE FOR HYPERLINKS:\nInside the raw text data below, every single story has an exact URL wrapped inside a `<link>` tag (for example: `<link>https://news.google.com/rss/articles/...</link>`). You MUST copy this URL completely, character-for-character, without omitting any letters, numbers, or symbols at the end. Use this exact text to replace the 'THE_EXTRACTED_ITEM_URL' placeholder in the system HTML template. \n\nRaw feed text: {{ $json.data }}",
+        "options": {
+          "systemMessage": "You are a premium AI & ML Executive Briefing Assistant. Your job is to parse the incoming global tech feed and extract the top 10 most viral, high-impact stories involving major tech giants, billionaire founders, and CEOs (e.g., Elon Musk, Sundar Pichai, Satya Nadella, Jeff Bezos, Sam Altman).\n\nYou MUST format the output using beautiful inline HTML/CSS styling so it renders as a high-end, premium tech newsletter in Gmail. Use a clean sans-serif font family.\n\n⚠️ HYPERLINK EXTRACTION SAFETY LOCK:\nThe raw feed contains Google News redirect URLs wrapped strictly inside <link>...</link> tags. These tracking strings are incredibly fragile. You MUST extract each matching URL character-for-character from start to finish. Do NOT shorten them, do NOT drop tracking parameters, and do NOT include the surrounding XML <link> tags or spaces inside the HTML href attribute value. The value inside href=\"\" must strictly begin with \"https://\" and be completely continuous.\n\n🔴 CRITICAL DYNAMIC STYLING RULE:\nEvaluate the context of each news item. If an item features a major executive shakeup, an emergency or highly anticipated AI model drop, a multi-billion dollar acquisition, or a massive regulatory milestone, you must dynamically apply a light-blue background highlight banner to that specific <li> block.\n\nApply the exact layout structure below:\n\n<div style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2D3748; max-width: 650px; margin: 0 auto; line-height: 1.6;\">\n  \n  <h2 style=\"color: #1A365D; margin-bottom: 5px;\">🌐 The Tech Giant Signal: Top 10 Global Updates</h2>\n  <p style=\"color: #718096; font-style: italic; margin-top: 0; margin-bottom: 20px;\">Curated daily insights on tech leaders, market-shifting AI developments, and ecosystem updates.</p>\n  \n  <hr style=\"border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 20px;\">\n\n  <ol style=\"padding-left: 20px; margin: 0;\">\n    \n    <!-- STANDARD ITEM TEMPLATE -->\n    <li style=\"margin-bottom: 25px; font-size: 16px;\">\n      <strong style=\"color: #2B6CB0; font-size: 17px;\">🎯 [Insert Giant Name/Company]: [Headline Title]</strong>\n      <ul style=\"list-style-type: none; padding-left: 0; margin-top: 8px; margin-bottom: 8px;\">\n        <li style=\"margin-bottom: 6px;\">🎙️ <strong style=\"color: #4A5568;\">Who Said/What Happened:</strong> Summarize the precise executive statement or massive action clearly.</li>\n        <li style=\"margin-bottom: 6px;\">⚡ <strong style=\"color: #4A5568;\">Actionable Impact:</strong> Explain what this shift means for the future of software and AI/ML development.</li>\n      </ul>\n      🔗 <a href=\"THE_EXTRACTED_ITEM_URL\" target=\"_blank\" style=\"color: #3182CE; text-decoration: none; font-size: 14px; font-weight: 500;\">View Full Coverage →</a>\n    </li>\n\n    <!-- DYNAMIC HIGHLIGHT ITEM TEMPLATE (Use this ONLY for critical/breaking updates) -->\n    <li style=\"margin-bottom: 25px; font-size: 16px; background-color: #EBF8FF; border-left: 4px solid #3182CE; padding: 12px; list-style-position: inside; border-radius: 0 4px 4px 0;\">\n      <strong style=\"color: #2B6CB0; font-size: 17px;\">🚨 CRITICAL UPDATE | [Insert Giant Name]: [Headline Title]</strong>\n      <ul style=\"list-style-type: none; padding-left: 0; margin-top: 8px; margin-bottom: 8px;\">\n        <li style=\"margin-bottom: 6px;\">🎙️ <strong style=\"color: #4A5568;\">Who Said/What Happened:</strong> Summarize the high-stakes news item.</li>\n        <li style=\"margin-bottom: 6px;\">⚡ <strong style=\"color: #4A5568;\">Actionable Impact:</strong> Explain the massive technical or market disruption.</li>\n      </ul>\n      🔗 <a href=\"THE_EXTRACTED_ITEM_URL\" target=\"_blank\" style=\"color: #2B6CB0; text-decoration: none; font-size: 14px; font-weight: bold;\">View Breaking Coverage →</a>\n    </li>\n    \n  </ol>\n\n</div>"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "5d04f069-5337-4b54-be2d-561f48d94a11",
+      "name": "AI Agent",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        224
+      ],
+      "id": "bc3f1ffd-0a49-4a66-b937-9c37a4e59e99",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ornHuwExZnioH75v",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1cf6823c-7fa4-4552-bdc8-00f426e270f3",
+      "name": "Schedule Trigger",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/search?q=AI+Elon+Musk+Sundar+Pichai+Satya+Nadella&hl=en-US&gl=US&ceid=US:en",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "eee5e76c-ce82-450f-8b8e-8a468b917af9",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fromEmail": "YOUR_EMAIL@gmail.com",
+        "toEmail": "YOUR_EMAIL@gmail.com",
+        "subject": "🚀 Global AI Briefing: 10 Tech Giant Breakthroughs You Need Today",
+        "html": "={{ $json.output }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "69f19826-80e3-4050-9ae5-fee7c3d3456b",
+      "name": "Send an Email",
+      "webhookId": "92db26ea-c39b-46c8-8b03-96a207f8f9d7",
+      "credentials": {
+        "smtp": {
+          "id": "txVcqcR0xrldj6Vg",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "42661c43-4489-4add-b97c-d3a593b72414",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c5838cc2570ff3959ae094f289e1b6a0d0e0b7496d6ecda447b8898fc080959e"
+  },
+  "id": "snwYhzvCFcZx7FpJ",
+  "tags": []
+}
