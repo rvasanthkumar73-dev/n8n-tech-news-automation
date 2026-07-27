@@ -5,7 +5,7 @@
 ![n8n](https://img.shields.io/badge/n8n-workflow-EA4B71?style=flat-square&logo=n8n&logoColor=white)
 ![Gemini](https://img.shields.io/badge/AI-Google%20Gemini-4285F4?style=flat-square&logo=googlegemini&logoColor=white)
 ![Automation](https://img.shields.io/badge/type-scheduled%20automation-success?style=flat-square)
-![Status](https://img.shields.io/badge/status-active-brightgreen?style=flat-square)
+![Status](https://img.shields.io/badge/status-local--only-lightgrey?style=flat-square)
 
 ---
 
